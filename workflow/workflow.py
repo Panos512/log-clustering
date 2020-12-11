@@ -139,8 +139,9 @@ def run(creds, fout, date=None, ifilter=None):
     if fout:
         nrows = df.shape[0]
         count = 0
+        now = time.time()
         with open(fout, 'w') as ostream:
-            ostream.write('[' + '\n')
+            ostream.write('[{"producer": "logclustering",\n "type_prefix": "raw",\n "type": "log_classification",\n "timestamp": ' + now + ',\n "data": [' + '\n' )
             for d in df_to_batches(res, 10000):
                 for r in d:
                     if nrows - count == 1: # last row to write
@@ -148,7 +149,7 @@ def run(creds, fout, date=None, ifilter=None):
                     else:
                         ostream.write(json.dumps(r)+',\n')
                     count += 1
-            ostream.write(']' + '\n')
+            ostream.write(']]' + '\n')
 
     creds = credentials(creds)
     if creds:
